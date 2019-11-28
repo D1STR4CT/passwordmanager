@@ -45,7 +45,6 @@ def change_keyword():
         providedPWD2 = getpass("Confirm password: ")
         if providedPWD1 == providedPWD2:
             providedPWD = providedPWD1
-            return providedPWD
         else:
             print("Keywords don\'t match, please try again")
     createsalt()
