@@ -93,7 +93,7 @@ Enter the password you would like to use as keyword.
 The keyword is used to login, and encrypt/decrypt the database.
 The default is that your masterpassword and keyword are the same.
 If you want to be able to let people acces your passwords but not edit them you can 
-change the keyword. Your keyword can only be change using your masterpassword.""")
+change the keyword. Your keyword can only be changed using your masterpassword.""")
 password = passwordquery()
 f = open('mPassword.txt', 'w')
 f.write(str(hash_password(password)))
@@ -111,5 +111,5 @@ encrypt_database(key)
 print("Creating encryption key...")
 time.sleep(5)
 print("Encryption key created!")
-print("Please deleted setup.py after closing.")
+print("Please delete setup.py after closing.")
 input("Press [enter] to close setup...")
