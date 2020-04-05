@@ -201,7 +201,7 @@ def mainMenu():
             if check_Password():
                 change_keyword()
             else:
-                print("An error occured, please try again later.")
+                print("An error occurred, please try again later.")
         elif menu_choice == 'x':
             encrypt_database(key)
             exit()

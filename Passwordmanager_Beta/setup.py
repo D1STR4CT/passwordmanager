@@ -92,7 +92,7 @@ This script is used to setup your password manager.
 Enter the password you would like to use as keyword.
 The keyword is used to login, and encrypt/decrypt the database.
 The default is that your masterpassword and keyword are the same.
-If you want to be able to let people acces your passwords but not edit them you can 
+If you want to be able to let people access your passwords but not edit them you can 
 change the keyword. Your keyword can only be changed using your masterpassword.""")
 password = passwordquery()
 f = open('mPassword.txt', 'w')
