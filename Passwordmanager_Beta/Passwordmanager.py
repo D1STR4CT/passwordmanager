@@ -11,6 +11,9 @@ from cryptography.fernet import Fernet
 import base64
 
 
+def clearscreen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 def createsalt():
     salty = os.urandom(16)
     f = open('salt.txt', 'wb')
@@ -105,7 +108,7 @@ def view_passwords():
     f.close()
     print("Press [x] and hit enter to close")
     input()
-    os.system('cls')
+    clearscreen()
 
 
 def verify_password(stored_Password, provided_password):
@@ -135,7 +138,7 @@ def new_Passwordquery():
         passInput2 = getpass("Please confirm your new password: ")
         if passInput1 == passInput2:
             new_Password = passInput1
-            os.system('cls')
+            clearscreen()
             return new_Password
         else:
             print("Passwords do not match, please try again.")
@@ -146,7 +149,7 @@ def check_Password():
         f = open('mPassword.txt', 'r')
         if verify_password(f.readline(), Passwordquery()):
             f.close()
-            os.system('cls')
+            clearscreen()
             return True
         else:
             print("Wrong password, please try again")
@@ -172,7 +175,7 @@ def change_Password():
         print("Password saved succesfully!")
         print("Returning to menu.")
         time.sleep(1)
-        os.system('cls')
+        clearscreen()
 
 
 def mainMenu():
@@ -186,13 +189,13 @@ def mainMenu():
         print("[x] Exit")
         menu_choice = input("Choice: ")
         if menu_choice == '1':
-            os.system('cls')
+            clearscreen()
             view_passwords()
         elif menu_choice == '2':
-            os.system('cls')
+            clearscreen()
             save_password()
         elif menu_choice == '3':
-            os.system('cls')
+            clearscreen()
             if check_Password():
                 change_Password()
             else:
@@ -207,7 +210,7 @@ def mainMenu():
             exit()
 
 
-os.system('cls')
+clearscreen()
 print(
     '''WARNING: This password manager works differently than normal password managers.
     -You have two passwords:

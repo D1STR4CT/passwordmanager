@@ -12,6 +12,9 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.fernet import Fernet
 import base64
 
+def clearscreen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 
 def hash_password(password):
     # hash password for storing
@@ -86,7 +89,7 @@ def change_keyword(password, key):
     exit()
 
 
-os.system('cls')
+clearscreen()
 print("""
 This script is used to setup your password manager.
 Enter the password you would like to use as keyword.
@@ -100,7 +103,7 @@ f.write(str(hash_password(password)))
 f.close()
 print("Password should be saved succesfully.")
 time.sleep(3)
-os.system('cls')
+clearscreen()
 createsalt()
 salty = saltyretrieve()
 key = encryption_key(password, salty)
