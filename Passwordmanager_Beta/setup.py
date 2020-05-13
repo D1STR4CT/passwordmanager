@@ -15,13 +15,13 @@ def clearscreen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
-def hash_password(password):
-    # hash password for storing
-    salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
-    pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'),
-                                  salt, 10000)
-    pwdhash = binascii.hexlify(pwdhash)
-    return (salt + pwdhash).decode('ascii')
+# def hash_password(password):
+#     # hash password for storing
+#     salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
+#     pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'),
+#                                   salt, 10000)
+#     pwdhash = binascii.hexlify(pwdhash)
+#     return (salt + pwdhash).decode('ascii')
 
 
 def passwordquery():
@@ -97,12 +97,12 @@ The default is that your masterpassword and keyword are the same.
 If you want to be able to let people access your passwords but not edit them you can 
 change the keyword. Your keyword can only be changed using your masterpassword.""")
 password = passwordquery()
-f = open('mPassword.txt', 'w')
-f.write(str(hash_password(password)))
-f.close()
-print("Password should be saved succesfully.")
-time.sleep(3)
-clearscreen()
+# f = open('mPassword.txt', 'w')
+# f.write(str(hash_password(password)))
+# f.close()
+# print("Password should be saved succesfully.")
+# time.sleep(3)
+# clearscreen()
 createsalt()
 salty = saltyretrieve()
 key = encryption_key(password, salty)
