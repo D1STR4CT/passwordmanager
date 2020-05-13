@@ -14,22 +14,21 @@ def clearscreen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def createsalt():
-    salty = os.urandom(16)
+    salt = os.urandom(16)
     f = open('salt.txt', 'wb')
-    f.write(salty)
+    f.write(salt)
     f.close()
 
 
 def saltyretrieve():
     f = open('salt.txt', 'rb')
-    salty = f.read()
+    salt = f.read()
     f.close()
-    return salty
+    return salt
 
 
-def encryption_key(providedPWD, salty):
+def encryption_key(providedPWD, salt):
     password = providedPWD.encode()
-    salt = salty
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
@@ -50,8 +49,8 @@ def change_keyword():
         else:
             print("Keywords don\'t match, please try again")
     createsalt()
-    salty = saltyretrieve()
-    key = encryption_key(providedPWD, salty)
+    salt = saltyretrieve()
+    key = encryption_key(providedPWD, salt)
     encrypt_database(key)
     exit()
 

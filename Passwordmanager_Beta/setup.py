@@ -45,9 +45,9 @@ def createsalt():
 
 def saltyretrieve():
     f = open('salt.txt', 'rb')
-    salty = f.read()
+    salt = f.read()
     f.close()
-    return salty
+    return salt
 
 
 def encrypt_database(key):
@@ -68,9 +68,8 @@ def encrypt_database(key):
     f.close()
 
 
-def encryption_key(password, salty):
+def encryption_key(password, salt):
     password = password.encode()
-    salt = salty
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
