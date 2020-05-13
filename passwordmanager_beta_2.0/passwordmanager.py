@@ -1,7 +1,5 @@
-#!/usr/bin/env python3
+# Passwordmanager
 
-import hashlib
-import binascii
 import os
 import time
 from getpass import getpass
@@ -12,11 +10,10 @@ from cryptography.fernet import Fernet, InvalidToken
 import base64
 
 
-# pwddatabase.txt
-# salt.txt
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
+
 
 def get_master_password_from_user():
     while True:
@@ -30,16 +27,19 @@ def get_master_password_from_user():
 def create_salt():
     return os.urandom(16)
 
+
 def get_user_salt():
     f = open('salt.txt', 'rb')
     salt = f.read()
     f.close()
     return salt
 
+
 def create_encryption_key(password: str, salt: str):
     password = password.encode()
     kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt, iterations=100000, backend=default_backend())
     return base64.urlsafe_b64encode(kdf.derive(password))
+
 
 def encrypt_database_file(key: str):
     password_database_file = open('pwddatabase.txt', 'rb')
@@ -53,6 +53,7 @@ def encrypt_database_file(key: str):
     password_database_file.write(encrypted_password_database)
     password_database_file.close()
 
+
 def get_decrypted_database(key: str):
     password_database_file = open('pwddatabase.txt', 'rb')
     password_database = password_database_file.read()
@@ -63,11 +64,13 @@ def get_decrypted_database(key: str):
 
     return decrypted_password_database.decode()
 
+
 def save_database_encrypted(database_content: str, key: str):
     password_database_file = open('pwddatabase.txt', 'wb')
     password_database_file.write(database_content.encode())
     password_database_file.close()
     encrypt_database_file(key)
+
 
 def setup():
     print('Starting the setup...')
@@ -83,6 +86,7 @@ def setup():
     password_database_file.write("Passwords will be saved in the format: \n" + "Username : Passwords \n")
     password_database_file.close()
     encrypt_database_file(create_encryption_key(master_password, get_user_salt()))
+
 
 def authenticate_user(failed = False):
     if failed:
@@ -113,6 +117,7 @@ def view_passwords():
     print("Press a key to continue...")
     input()
 
+
 def change_master_password():
     new_master_password = getpass('Please enter your new password: ')
     database = get_decrypted_database(create_encryption_key(master_password, get_user_salt()))
@@ -123,6 +128,7 @@ def change_master_password():
     save_database_encrypted(database, create_encryption_key(new_master_password, new_salt))
     print('The password has been changed!')
     time.sleep(1)
+
 
 def main():
     clear_screen()
@@ -155,6 +161,7 @@ def main():
             clear_screen()
         elif menu_choice == 'x':
             exit()
+
 
 if __name__ == '__main__':
     main()
