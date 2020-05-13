@@ -40,19 +40,12 @@ def encryption_key(providedPWD, salt):
     return key
 
 
-def change_keyword():
-    while True:
-        providedPWD1 = getpass("Enter new keyword: ")
-        providedPWD2 = getpass("Confirm password: ")
-        if providedPWD1 == providedPWD2:
-            providedPWD = providedPWD1
-        else:
-            print("Keywords don\'t match, please try again")
+def change_keyword(new_Password, key):
+    decrypt_database(key)
     createsalt()
     salt = saltyretrieve()
-    key = encryption_key(providedPWD, salt)
-    encrypt_database(key)
-    exit()
+    # newkey = encryption_key(new_Password, salt)
+    encrypt_database(encryption_key(new_Password, salt))
 
 
 def encrypt_database(key):
@@ -109,16 +102,16 @@ def view_passwords():
     clearscreen()
 
 
-def verify_password(stored_Password, provided_password):
-    # verify a stored password against one provided by user
-    salt = stored_Password[:64]
-    stored_Password = stored_Password[64:]
-    pwdhash = hashlib.pbkdf2_hmac('sha512',
-                                  provided_password.encode('utf-8'),
-                                  salt.encode('ascii'),
-                                  10000)
-    pwdhash = binascii.hexlify(pwdhash).decode('ascii')
-    return pwdhash == stored_Password
+# def verify_password(stored_Password, provided_password):
+#     # verify a stored password against one provided by user
+#     salt = stored_Password[:64]
+#     stored_Password = stored_Password[64:]
+#     pwdhash = hashlib.pbkdf2_hmac('sha512',
+#                                   provided_password.encode('utf-8'),
+#                                   salt.encode('ascii'),
+#                                   10000)
+#     pwdhash = binascii.hexlify(pwdhash).decode('ascii')
+#     return pwdhash == stored_Password
 
 
 def Passwordquery():
@@ -142,38 +135,38 @@ def new_Passwordquery():
             print("Passwords do not match, please try again.")
 
 
-def check_Password():
-    for i in range(1, 3):
-        f = open('mPassword.txt', 'r')
-        if verify_password(f.readline(), Passwordquery()):
-            f.close()
-            clearscreen()
-            return True
-        else:
-            print("Wrong password, please try again")
-            i += 1
+# def check_Password():
+#     for i in range(1, 3):
+#         f = open('mPassword.txt', 'r')
+#         if verify_password(f.readline(), Passwordquery()):
+#             f.close()
+#             clearscreen()
+#             return True
+#         else:
+#             print("Wrong password, please try again")
+#             i += 1
 
 
-def hash_new_Password(new_Password):
-    # hash password for storing
-    salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
-    pwdhash = hashlib.pbkdf2_hmac('sha512', new_Password.encode('utf-8'),
-                                  salt, 10000)
-    pwdhash = binascii.hexlify(pwdhash)
-    return (salt + pwdhash).decode('ascii')
+# def hash_new_Password(new_Password):
+#     # hash password for storing
+#     salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
+#     pwdhash = hashlib.pbkdf2_hmac('sha512', new_Password.encode('utf-8'),
+#                                   salt, 10000)
+#     pwdhash = binascii.hexlify(pwdhash)
+#     return (salt + pwdhash).decode('ascii')
 
 
-def change_Password():
-    # print("Only change your masterpassword if you are sure you can remember it.")
-    if check_Password():
-        f = open('mPassword.txt', 'w')
-        new_Password = new_Passwordquery()
-        f.write(str(hash_new_Password(new_Password)))
-        f.close()
-        print("Password saved successfully!")
-        print("Returning to menu.")
-        time.sleep(1)
-        clearscreen()
+# def change_Password():
+#     # print("Only change your masterpassword if you are sure you can remember it.")
+#     if check_Password():
+#         f = open('mPassword.txt', 'w')
+#         new_Password = new_Passwordquery()
+#         f.write(str(hash_new_Password(new_Password)))
+#         f.close()
+#         print("Password saved successfully!")
+#         print("Returning to menu.")
+#         time.sleep(1)
+#         clearscreen()
 
 
 def mainMenu():
@@ -183,7 +176,7 @@ def mainMenu():
         print("[1] View passwords")
         print("[2] Add password")
         print("[3] Change masterpassword")
-        print("[4] Change keypassword")
+        # print("[4] Change keypassword")
         print("[x] Exit")
         menu_choice = input("Choice: ")
         if menu_choice == '1':
@@ -194,15 +187,7 @@ def mainMenu():
             save_password()
         elif menu_choice == '3':
             clearscreen()
-            if check_Password():
-                change_Password()
-            else:
-                print("An error occurred, please try again later.")
-        elif menu_choice == '4':
-            if check_Password():
-                change_keyword()
-            else:
-                print("An error occurred, please try again later.")
+            change_keyword()
         elif menu_choice == 'x':
             encrypt_database(key)
             exit()
@@ -217,8 +202,8 @@ print(
     -Your master password is set separately and can be used to change your keypassword.
     Note that if you change your keypassword the program will shut down and you need to reopen it.
     ''')
-salty = saltyretrieve()
+# salty = saltyretrieve()
 providedPWD = getpass("Please enter key to decrypt database: ")
-key = encryption_key(providedPWD, salty)
-decrypt_database(key)
+key = encryption_key(providedPWD, saltyretrieve())
+# decrypt_database(key)
 mainMenu()
