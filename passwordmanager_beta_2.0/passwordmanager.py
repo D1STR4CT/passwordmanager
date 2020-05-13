@@ -8,7 +8,7 @@ from getpass import getpass
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 import base64
 
 
@@ -61,11 +61,11 @@ def get_decrypted_database(key: str):
     fernet = Fernet(key)
     decrypted_password_database = fernet.decrypt(password_database)
 
-    return decrypted_password_database
+    return decrypted_password_database.decode()
 
 def save_database_encrypted(database_content: str, key: str):
     password_database_file = open('pwddatabase.txt', 'wb')
-    password_database_file.write(database_content)
+    password_database_file.write(database_content.encode())
     password_database_file.close()
     encrypt_database_file(key)
 
@@ -84,6 +84,46 @@ def setup():
     password_database_file.close()
     encrypt_database_file(create_encryption_key(master_password, get_user_salt()))
 
+def authenticate_user(failed = False):
+    if failed:
+        print('The entered password is incorrect, try again please')
+
+    provided_password = getpass("Please enter your masterpassword: ")
+    database_decrypted = None
+    try:
+        database_decrypted = get_decrypted_database(create_encryption_key(provided_password, get_user_salt()))
+        global master_password
+        master_password = provided_password
+    except InvalidToken:
+        authenticate_user(True)
+
+
+def save_password():
+    key = create_encryption_key(master_password, get_user_salt())
+    database = get_decrypted_database(key)
+    username = input("Input username: ")
+    password = getpass("Enter password: ")
+    database += '{} : {}\n'.format(username, password)
+    save_database_encrypted(database, key)
+
+
+def view_passwords():
+    database = get_decrypted_database(create_encryption_key(master_password, get_user_salt()))
+    print(database)
+    print("Press a key to continue...")
+    input()
+
+def change_master_password():
+    new_master_password = getpass('Please enter your new password: ')
+    database = get_decrypted_database(create_encryption_key(master_password, get_user_salt()))
+    new_salt = create_salt()
+    salt_file = open('salt.txt', 'wb')
+    salt_file.write(new_salt)
+    salt_file.close()
+    save_database_encrypted(database, create_encryption_key(new_master_password, new_salt))
+    print('The password has been changed!')
+    time.sleep(1)
+
 def main():
     clear_screen()
     if os.path.exists('pwddatabase.txt') == False or os.path.exists('salt.txt') == False:
@@ -91,10 +131,10 @@ def main():
         setup()
 
     # Start the passwordmanager, or the setup ran or everything was already set-up
+    print("Welcome to my password manager.")
+    # User should authenticate here
+    authenticate_user()
     while True:
-        print("Welcome to my password manager.")
-        # User should authenticate here
-        provided_password = getpass("Please enter your masterpassword: ")
         print("Please choose what you want to do.")
         print("[1] View passwords")
         print("[2] Add password")
@@ -104,12 +144,15 @@ def main():
         if menu_choice == '1':
             clear_screen()
             view_passwords()
+            clear_screen()
         elif menu_choice == '2':
             clear_screen()
             save_password()
+            clear_screen()
         elif menu_choice == '3':
             clear_screen()
             change_master_password()
+            clear_screen()
         elif menu_choice == 'x':
             exit()
 
