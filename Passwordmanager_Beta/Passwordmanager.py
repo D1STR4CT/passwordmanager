@@ -3,7 +3,6 @@ import binascii
 import os
 import time
 from getpass import getpass
-import cryptography
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -172,7 +171,7 @@ def change_Password():
         new_Password = new_Passwordquery()
         f.write(str(hash_new_Password(new_Password)))
         f.close()
-        print("Password saved succesfully!")
+        print("Password saved successfully!")
         print("Returning to menu.")
         time.sleep(1)
         clearscreen()
