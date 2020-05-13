@@ -1,7 +1,5 @@
 # passwordmanager
 
-**not functional**
-
 This is the prototype version of the password manager I am making for a school project.  
 Feel free to take a look at the code and suggest changes.  
 If you do decide to try and run it make sure you have the modules that are used in the code installed.  
