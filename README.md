@@ -10,3 +10,5 @@ I am currently working on increasing the security of the passwords and after tha
 Upcomming functions:
 * Search function to find login data.
 * Copy password to clipboard (if I can make it work)
+* Change password in login data (I forgot that some sites require you to change your pw regularly)
+* Random password creator
