@@ -199,7 +199,7 @@ def mainMenu():
             if check_Password():
                 change_Password()
             else:
-                print("An error occured, please try again later.")
+                print("An error occurred, please try again later.")
         elif menu_choice == '4':
             if check_Password():
                 change_keyword()
@@ -216,8 +216,8 @@ print(
     -You have two passwords:
         Your masterpassword and your keypassword.
     -Your keypassword is used when logging to acces your saved passwords.
-    -Your master password is set sepperatly and can be used to change your keypassword.
-    Note that if you change your keypassword the programm will shut down and you need to reopen it.
+    -Your master password is set separately and can be used to change your keypassword.
+    Note that if you change your keypassword the program will shut down and you need to reopen it.
     ''')
 salty = saltyretrieve()
 providedPWD = getpass("Please enter key to decrypt database: ")
