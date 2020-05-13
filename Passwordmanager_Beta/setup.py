@@ -95,7 +95,7 @@ The keyword is used to login, and encrypt/decrypt the database.
 The default is that your masterpassword and keyword are the same.
 If you want to be able to let people access your passwords but not edit them you can 
 change the keyword. Your keyword can only be changed using your masterpassword.""")
-password = passwordquery()
+# password = passwordquery()
 # f = open('mPassword.txt', 'w')
 # f.write(str(hash_password(password)))
 # f.close()
@@ -103,8 +103,7 @@ password = passwordquery()
 # time.sleep(3)
 # clearscreen()
 createsalt()
-salty = saltyretrieve()
-key = encryption_key(password, salty)
+key = encryption_key(passwordquery(), saltyretrieve())
 f = open('pwddatabase.txt', 'w')
 f.write("Passwords will be saved in the format: \n" + "Username : Passwords \n")
 f.close()
