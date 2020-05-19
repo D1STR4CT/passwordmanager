@@ -108,10 +108,17 @@ def save_password():
     key = create_encryption_key(master_password, get_user_salt())
     database = get_decrypted_database(key)
     username = input("Input username: ")
-    password = getpass("Enter password: ")
-    database += f'{username} : {pasword}\n'
-    save_database_encrypted(database, key)
-
+    while True: 
+        password = getpass("Enter password: ")
+        password_check = getpass("Please confirm password")
+        if password or password_check == "cancel", "c":
+            break
+        elif password == password_check:
+            database += f'{username} : {pasword}\n'
+            save_database_encrypted(database, key)
+            break
+        else: 
+            print("Passwords dit not match, please try again.")
 
 def view_passwords():
     database = get_decrypted_database(create_encryption_key(master_password, get_user_salt()))
