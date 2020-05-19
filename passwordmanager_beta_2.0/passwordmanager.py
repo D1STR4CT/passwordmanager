@@ -111,9 +111,7 @@ def save_password():
     while True: 
         password = getpass("Enter password: ")
         password_check = getpass("Please confirm password")
-        if password or password_check == "cancel", "c":
-            break
-        elif password == password_check:
+        if password == password_check:
             database += f'{username} : {pasword}\n'
             save_database_encrypted(database, key)
             break
