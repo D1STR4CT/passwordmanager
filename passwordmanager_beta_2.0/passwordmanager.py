@@ -24,6 +24,7 @@ def get_master_password_from_user():
         else:
             print('The passwords didn\'t match, try again please. ')
 
+
 def create_salt():
     return os.urandom(16)
 
@@ -78,7 +79,6 @@ def setup():
     print('This password will be used to login and encrypt/decrypt the database. ')
     global master_password
     master_password = get_master_password_from_user()
-    print('master_password: {}'.format(master_password))
     salt_file = open('salt.txt', 'wb')
     salt_file.write(create_salt())
     salt_file.close()
@@ -86,6 +86,8 @@ def setup():
     password_database_file.write("Passwords will be saved in the format: \n" + "Username : Passwords \n")
     password_database_file.close()
     encrypt_database_file(create_encryption_key(master_password, get_user_salt()))
+    input('Setup complete \nPress enter to continue')
+    clear_screen() 
 
 
 def authenticate_user(failed = False):
@@ -107,7 +109,7 @@ def save_password():
     database = get_decrypted_database(key)
     username = input("Input username: ")
     password = getpass("Enter password: ")
-    database += '{} : {}\n'.format(username, password)
+    database += f'{username} : {pasword}\n'
     save_database_encrypted(database, key)
 
 
