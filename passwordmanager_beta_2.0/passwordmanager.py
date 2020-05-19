@@ -83,7 +83,7 @@ def setup():
     salt_file.write(create_salt())
     salt_file.close()
     password_database_file = open("pwddatabase.txt", "w")
-    password_database_file.write("MyPasswordVault: \n" + "Username : Passwords \n")
+    password_database_file.write("MyPasswordVault: \n" + "Domain : Username : Passwords \n")
     password_database_file.close()
     encrypt_database_file(create_encryption_key(master_password, get_user_salt()))
     input("Setup complete \nPress enter to continue")
@@ -107,12 +107,13 @@ def authenticate_user(failed = False):
 def save_password():
     key = create_encryption_key(master_password, get_user_salt())
     database = get_decrypted_database(key)
+    domain = input("What are these credentials for?: ")
     username = input("Input username: ")
     while True: 
         password = getpass("Enter password: ")
         password_check = getpass("Please confirm password: ")
         if password == password_check:
-            database += f"{username} : {password}\n"
+            database += f"{domain} : {username} : {password}\n"
             save_database_encrypted(database, key)
             break
         else: 
