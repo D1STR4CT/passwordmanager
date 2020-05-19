@@ -112,7 +112,7 @@ def save_password():
         password = getpass("Enter password: ")
         password_check = getpass("Please confirm password")
         if password == password_check:
-            database += f"{username} : {pasword}\n"
+            database += f"{username} : {password}\n"
             save_database_encrypted(database, key)
             break
         else: 
