@@ -131,7 +131,7 @@ def save_password():
     database = get_decrypted_database(key)
     domain = input("What are these credentials for?: ")
     username = input("Input username: ")
-    print("Enter \"random\" for random password. \nEnter \"random edit\" to edit the settings.")
+    print("\nEnter \"random\" for random password. \nEnter \"random edit\" to edit the settings.")
     password_input = input("Enter password: ")
     if password_input == "random":
         password = generate_password()
