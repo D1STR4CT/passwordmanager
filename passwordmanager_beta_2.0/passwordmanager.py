@@ -8,7 +8,29 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.fernet import Fernet, InvalidToken
 import base64
+import random
+import typing
+import math
 
+
+def generate_password(length = 10, uppercase_len = 2, special_len = 2, numbers = 2):
+    lower = 'abcdefghijklmnopqrstuvwxyz'
+    upper = lower.upper()
+    special_chars = '!@#$%^&*()_+-=~/?\\[]{}'
+    generated_password = ''
+    for _ in range(0, uppercase_len): 
+        generated_password += upper[random.randint(0, len(upper) -1)]
+
+    for _ in range(0, special_len):
+        generated_password += special_chars[random.randint(0, len(special_chars) -1 )]
+
+    for _ in range(0, length - len(generated_password)):
+        generated_password += lower[random.randint(0, len(lower) -1)]
+
+    #Shuffle the password so it is randomised and return it
+    l = list(generated_password)
+    random.shuffle(l)
+    return ''.join(l)
 
 
 def clear_screen():
@@ -109,15 +131,27 @@ def save_password():
     database = get_decrypted_database(key)
     domain = input("What are these credentials for?: ")
     username = input("Input username: ")
-    while True: 
-        password = getpass("Enter password: ")
-        password_check = getpass("Please confirm password: ")
-        if password == password_check:
-            database += f"{domain} : {username} : {password}\n"
-            save_database_encrypted(database, key)
-            break
-        else: 
-            print("Passwords did not match, please try again.")
+    print("Enter \"random\" for random password. \nEnter \"random edit\" to edit the settings.")
+    password_input = input("Enter password: ")
+    if password_input == "random":
+        password = generate_password()
+        print(f"Generated password = {password}")
+        input("\nPress enter key to continue...")
+    elif password_input =="random edit":
+        length = input("Password length: ")
+        uppercase_len: typing.Union[int, str] = input("Amount of uppercase characters: ")
+        special_len: typing.Union[int, str] = input("Amount of special characters: ")
+        if isinstance(uppercase_len, str):
+            uppercase_len = int(round(int(length)/5))
+        if isinstance(special_len, str):
+            special_len = int(round(int(length)/5))
+        password = generate_password(int(length), int(uppercase_len), int(special_len), )
+        print(f"Generated password = {password}")
+        input("\nPress enter key to continue...")
+    else:
+        password = password_input
+    database += f"{domain} : {username} : {password}\n"
+    save_database_encrypted(database, key)
 
 def view_passwords():
     database = get_decrypted_database(create_encryption_key(master_password, get_user_salt()))
@@ -150,6 +184,8 @@ def main():
     # User should authenticate here
     authenticate_user()
     while True:
+        clear_screen()
+        print("Welcome to the menu.")
         print("Please choose what you want to do.")
         print("[1] View passwords")
         print("[2] Add password")
@@ -169,6 +205,7 @@ def main():
             change_master_password()
             clear_screen()
         elif menu_choice == "x":
+            clear_screen()
             exit()
 
 
