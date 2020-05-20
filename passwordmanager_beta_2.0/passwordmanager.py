@@ -161,17 +161,23 @@ def view_passwords():
 
 
 def change_master_password():
-    new_master_password = getpass("Please enter your new password: ")
-    new_master_password_check = getpass("Please confirm your password: ")
-    database = get_decrypted_database(create_encryption_key(master_password, get_user_salt()))
-    new_salt = create_salt()
-    salt_file = open("salt.txt", "wb")
-    salt_file.write(new_salt)
-    salt_file.close()
-    save_database_encrypted(database, create_encryption_key(new_master_password, new_salt))
-    print("The password has been changed!")
-    time.sleep(1)
-
+    print("Please note that the program will close after changing the password. You have to manualy reopen it.\n")
+    while True: 
+        new_master_password = getpass("Please enter your new password: ")
+        new_master_password_check = getpass("Please confirm your password: ")
+        if new_master_password == new_master_password_check:
+            database = get_decrypted_database(create_encryption_key(master_password, get_user_salt()))
+            new_salt = create_salt()
+            salt_file = open("salt.txt", "wb")
+            salt_file.write(new_salt)
+            salt_file.close()
+            save_database_encrypted(database, create_encryption_key(new_master_password, new_salt))
+            print("The password has been changed!")
+            time.sleep(1)
+            exit()
+            break
+        else:
+            print("Password don\'t match, please try again.")
 
 def main():
     clear_screen()
