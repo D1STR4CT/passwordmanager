@@ -14,6 +14,7 @@ import math
 
 
 def generate_password(length = 10, uppercase_len = 2, special_len = 2, numbers = 2):
+    # Function to generate a random password using strings of characters and a random number generator
     lower = 'abcdefghijklmnopqrstuvwxyz'
     upper = lower.upper()
     special_chars = '!@#$%^&*()_+-=~/?\\[]{}'
@@ -27,7 +28,7 @@ def generate_password(length = 10, uppercase_len = 2, special_len = 2, numbers =
     for _ in range(0, length - len(generated_password)):
         generated_password += lower[random.randint(0, len(lower) -1)]
 
-    #Shuffle the password so it is randomised and return it
+    # Shuffle the password so it is randomised and return it
     l = list(generated_password)
     random.shuffle(l)
     return ''.join(l)
@@ -65,6 +66,7 @@ def create_encryption_key(password: str, salt: str):
 
 
 def encrypt_database_file(key: str):
+    # A function that encrypts the database with a key created using the masterpassword and a salt
     password_database_file = open("pwddatabase.txt", "rb")
     password_database = password_database_file.read()
     password_database_file.close()
@@ -78,6 +80,7 @@ def encrypt_database_file(key: str):
 
 
 def get_decrypted_database(key: str):
+    # A function that gets the contents of the decrypted database and decrypts it
     password_database_file = open("pwddatabase.txt", "rb")
     password_database = password_database_file.read()
     password_database_file.close()
@@ -154,6 +157,7 @@ def save_password():
     save_database_encrypted(database, key)
 
 def view_passwords():
+    # Simple function that prints the contents of the database 
     database = get_decrypted_database(create_encryption_key(master_password, get_user_salt()))
     print(database)
     print("Press enter key to continue...")
@@ -165,6 +169,7 @@ def change_master_password():
     while True: 
         new_master_password = getpass("Please enter your new password: ")
         new_master_password_check = getpass("Please confirm your password: ")
+        # Check if passwords match and then sets new password
         if new_master_password == new_master_password_check:
             database = get_decrypted_database(create_encryption_key(master_password, get_user_salt()))
             new_salt = create_salt()
@@ -174,7 +179,7 @@ def change_master_password():
             save_database_encrypted(database, create_encryption_key(new_master_password, new_salt))
             print("The password has been changed!")
             time.sleep(1)
-            exit()
+            exit() # Because the masterpassword is stored as a value and can not be changed the program will need to be restarted or it will throw an error when the database is decrypted.
             break
         else:
             print("Password don\'t match, please try again.")
