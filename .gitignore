@@ -3,11 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-/passwordmanager_beta_2.0/pwddatabase.txt
-/passwordmanager_beta_2.0/salt.txt
-/Passwordmanager_Beta/Passwordmanager.py
-/Passwordmanager_Beta/README.txt
-/Passwordmanager_Beta/setup.py
+
 
 # C extensions
 *.so
