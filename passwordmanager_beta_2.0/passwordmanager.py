@@ -19,12 +19,16 @@ def generate_password(length = 10, uppercase_len = 2, special_len = 2, numbers =
     upper = lower.upper()
     special_chars = '!@#$%^&*()_+-=~/?\\[]{}'
     generated_password = ''
+    
+    # Generates i random capitcal letter where i is amount specified and adds these to the password string
     for _ in range(0, uppercase_len): 
         generated_password += upper[random.randint(0, len(upper) -1)]
-
+    
+    # Generates i random special characters from the special_string where i is the amount specified and adds these to the password string
     for _ in range(0, special_len):
         generated_password += special_chars[random.randint(0, len(special_chars) -1 )]
 
+    # Generates i random numbers [0-9] where i is the amount specified and adds these to the password string
     for _ in range(0, length - len(generated_password)):
         generated_password += lower[random.randint(0, len(lower) -1)]
 
