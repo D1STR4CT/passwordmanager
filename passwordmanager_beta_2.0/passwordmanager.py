@@ -1,4 +1,4 @@
-# Passwordmanager
+# Password manager
 
 import os
 import time
