@@ -13,35 +13,40 @@ import typing
 import math
 
 
-def generate_password(length = 10, uppercase_len = 2, special_len = 2, numbers = 2):
+def generate_password(length=10, uppercase_len=2, special_len=2, numbers=2):
     # Function to generate a random password using strings of characters and a random number generator
     lower = 'abcdefghijklmnopqrstuvwxyz'
     upper = lower.upper()
     special_chars = '!@#$%^&*()_+-=~/?\\[]{}'
     generated_password = ''
-    
-    # Generates i random capitcal letter where i is amount specified for the password
-    for _ in range(0, uppercase_len): 
-        generated_password += upper[random.randint(0, len(upper) -1)]
-    
+
+    # Generates i random capital letter where i is amount specified for the password
+    for _ in range(0, uppercase_len):
+        generated_password += upper[random.randint(0, len(upper) - 1)]
+
     # Generates i random special characters special-chars where i is the amount specified for the password
     for _ in range(0, special_len):
-        generated_password += special_chars[random.randint(0, len(special_chars) -1 )]
+        generated_password += special_chars[random.randint(0, len(special_chars) - 1)]
 
-    # Generates i random numbers [0-9] where i is the amount specified for the password
+    # Generates i random numbers where i is the amount specified for the password
+    for _ in range(0, numbers):
+        generated_password += random.randint(0,9)
+
+    # Generates random letter for the remainder of the password
     for _ in range(0, length - len(generated_password)):
-        generated_password += lower[random.randint(0, len(lower) -1)]
+        generated_password += lower[random.randint(0, len(lower) - 1)]
 
     # Shuffle the password so it is randomised and return it
-    l = list(generated_password)
-    random.shuffle(l)
-    return ''.join(l)
+    pwd = list(generated_password)
+    random.shuffle(pwd)
+    return ''.join(pwd)
 
 
-def clear_screen():
+def clear_screen(): # Checks what operation system command should be used when clearing the screen
     os.system("cls" if os.name == "nt" else "clear")
 
 
+# Get masterpassword from user, confirm it and then pass the masterpassword on
 def get_master_password_from_user():
     while True:
         pass1 = getpass("Please enter your password: ")
@@ -49,13 +54,15 @@ def get_master_password_from_user():
         if pass1 == pass2:
             return pass1
         else:
-            print("The passwords didn\"t match, try again please. ")
+            print("The passwords didn\'t match, try again please. ")
 
 
+# Create a random salt used to hash the password
 def create_salt():
     return os.urandom(16)
 
 
+# Get the user salt from file and return it
 def get_user_salt():
     f = open("salt.txt", "rb")
     salt = f.read()
@@ -63,14 +70,15 @@ def get_user_salt():
     return salt
 
 
+# Create an encryption key to encrypt/decrypt using the password and salt
 def create_encryption_key(password: str, salt: str):
     password = password.encode()
     kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt, iterations=100000, backend=default_backend())
     return base64.urlsafe_b64encode(kdf.derive(password))
 
 
+# Encrypt database using the encryption key
 def encrypt_database_file(key: str):
-    # A function that encrypts the database with a key created using the masterpassword and a salt
     password_database_file = open("pwddatabase.txt", "rb")
     password_database = password_database_file.read()
     password_database_file.close()
@@ -83,8 +91,8 @@ def encrypt_database_file(key: str):
     password_database_file.close()
 
 
+# Fetch database and decrypt it using the encryption key and return content
 def get_decrypted_database(key: str):
-    # A function that gets the contents of the decrypted database and decrypts it
     password_database_file = open("pwddatabase.txt", "rb")
     password_database = password_database_file.read()
     password_database_file.close()
@@ -95,6 +103,7 @@ def get_decrypted_database(key: str):
     return decrypted_password_database.decode()
 
 
+# Encrypt the database content with the encryption key
 def save_database_encrypted(database_content: str, key: str):
     password_database_file = open("pwddatabase.txt", "wb")
     password_database_file.write(database_content.encode())
@@ -102,6 +111,7 @@ def save_database_encrypted(database_content: str, key: str):
     encrypt_database_file(key)
 
 
+# Create the files necessary for the program to function
 def setup():
     print("Starting the setup...")
     print("Enter the password you would like to use. ")
@@ -116,10 +126,11 @@ def setup():
     password_database_file.close()
     encrypt_database_file(create_encryption_key(master_password, get_user_salt()))
     input("Setup complete \nPress enter to continue")
-    clear_screen() 
+    clear_screen()
 
 
-def authenticate_user(failed = False):
+# Authenticate user with masterpassword and if authenticated safe password in variable
+def authenticate_user(failed=False):
     if failed:
         print("The entered password is incorrect, try again please")
 
@@ -133,6 +144,7 @@ def authenticate_user(failed = False):
         authenticate_user(True)
 
 
+# Create credentials and save to database
 def save_password():
     key = create_encryption_key(master_password, get_user_salt())
     database = get_decrypted_database(key)
@@ -144,7 +156,7 @@ def save_password():
         password = generate_password()
         print(f"Generated password = {password}")
         input("\nPress enter key to continue...")
-    elif password_input =="random edit":
+    elif password_input == "random edit":
         length = input("Password length: ")
         uppercase_len: typing.Union[int, str] = input("Amount of uppercase characters: ")
         special_len: typing.Union[int, str] = input("Amount of special characters: ")
@@ -160,17 +172,19 @@ def save_password():
     database += f"{domain} : {username} : {password}\n"
     save_database_encrypted(database, key)
 
+
+# Print the decrypted contents of the database
 def view_passwords():
-    # Simple function that prints the contents of the database 
     database = get_decrypted_database(create_encryption_key(master_password, get_user_salt()))
     print(database)
     print("Press enter key to continue...")
     input()
 
 
+# Get the new masterpassword from user, decrypt with old one, encrypt with new one and restart
 def change_master_password():
     print("Please note that the program will close after changing the password. You have to manualy reopen it.\n")
-    while True: 
+    while True:
         new_master_password = getpass("Please enter your new password: ")
         new_master_password_check = getpass("Please confirm your password: ")
         # Check if passwords match and then sets new password
@@ -188,13 +202,15 @@ def change_master_password():
         else:
             print("Password don\'t match, please try again.")
 
+
+# Check for all necessary files and run either the setup or the program
 def main():
     clear_screen()
     if os.path.exists("pwddatabase.txt") == False or os.path.exists("salt.txt") == False:
         # At least one of the important files is missing so start the setup mode
         setup()
 
-    # Start the passwordmanager, or the setup ran or everything was already set-up
+    # Start the password manager, or the setup ran or everything was already set-up
     print("Welcome to my password manager.")
     # User should authenticate here
     authenticate_user()
